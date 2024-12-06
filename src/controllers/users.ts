@@ -19,7 +19,7 @@ export const getUser = (req: Request, res: Response) => {
       res.status(200).send(user);
     })
     .catch(err => {
-      res.status(404).send('Пользователя с таким id не найдено');
+      res.status(404).send(err);
     })
 }
 
@@ -32,5 +32,52 @@ export const createUser = (req: Request, res: Response) => {
     })
     .catch(err => {
       res.status(400).send(err)
+    });
+}
+
+export const updateUserProfile = (req: Request, res: Response) => {
+  // @TODO: change hardcoded user to requested from db
+  // @ts-ignore
+  const { _id: userId } = req.user;
+  const { name, about, avatar } = req.body;
+
+  User.findByIdAndUpdate(userId)
+    .then(user => {
+      if (!user) {
+        throw new Error('Пользователь не найден');
+      }
+
+      res.status(200).send({
+        name: name || user.name,
+        about: about || user.about,
+        avatar: avatar || user.avatar,
+      });
+    })
+    .catch(err => {
+      res.status(404).send(err);
+    });
+}
+
+export const updateUserAvatar = (req: Request, res: Response) => {
+  // @TODO: change hardcoded user to requested from db
+  // @ts-ignore
+  const { _id: userId } = req.user;
+  const { avatar } = req.body;
+
+  User.findByIdAndUpdate(userId)
+    .then(user => {
+      if (!user) {
+        throw new Error('Пользователь не найден');
+      }
+
+      res.status(200).send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: avatar
+      });
+    })
+    .catch(err => {
+      res.status(404).send(err);
     });
 }

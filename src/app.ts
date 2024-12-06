@@ -20,10 +20,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // middlewares
+// @TODO: remove this and requested from db
 app.use((req: Request, res: Response, next: NextFunction) => {
   //@ts-ignore
   req.user = {
-    _id: '67534288c5a807c679148429',
+    _id: '67536bea309a74f2f05a614f',
   };
 
   next();
