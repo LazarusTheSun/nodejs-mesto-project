@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 
 import usersRouter from 'routes/users';
+import cardsRouter from 'routes/cards';
 
 const { PORT = 3000 } = process.env;
 
@@ -30,6 +31,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // routes
 app.use('/users', usersRouter);
+app.use('/cards', cardsRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
