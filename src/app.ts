@@ -23,7 +23,7 @@ app.use(express.json());
 // middlewares
 // @TODO: remove this and requested from db
 app.use((req: Request, res: Response, next: NextFunction) => {
-  //@ts-ignore
+  // @ts-expect-error temporary solution - check todo above
   req.user = {
     _id: '67536bea309a74f2f05a614f',
   };
@@ -41,7 +41,8 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 })
 
 // error middleware
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+app.use((err: any, req: Request, res: Response) => {
   const { statusCode = 500, message } = err;
 
   res
@@ -55,4 +56,4 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-})
+});

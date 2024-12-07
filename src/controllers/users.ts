@@ -41,7 +41,7 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
 
 export const updateUserProfile = (req: Request, res: Response, next: NextFunction) => {
   // @TODO: change hardcoded user to requested from db
-  // @ts-ignore
+  // @ts-expect-error temporary solution - check todo above
   const { _id: userId } = req.user;
   const { name, about, avatar } = req.body;
 
@@ -62,7 +62,7 @@ export const updateUserProfile = (req: Request, res: Response, next: NextFunctio
 
 export const updateUserAvatar = (req: Request, res: Response, next: NextFunction) => {
   // @TODO: change hardcoded user to requested from db
-  // @ts-ignore
+  // @ts-expect-error temporary solution - check todo above
   const { _id: userId } = req.user;
   const { avatar } = req.body;
 
