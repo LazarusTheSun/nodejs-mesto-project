@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 
 import usersRouter from 'routes/users';
 import cardsRouter from 'routes/cards';
+import NotFoundError from 'errors/notFoundError';
 
 const { PORT = 3000 } = process.env;
 
@@ -34,6 +35,12 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
+// non-existing routes handler
+app.all('*', (req: Request, res: Response, next: NextFunction) => {
+  return next(new NotFoundError('Запрашиваемый путь не существует'));
+})
+
+// error middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const { statusCode = 500, message } = err;
 
