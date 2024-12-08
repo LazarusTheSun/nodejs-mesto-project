@@ -6,7 +6,7 @@ import User from 'models/user';
 export const getUsers = (req: Request, res: Response, next: NextFunction) => {
   User.find({})
     .then(users => {
-      res.status(201).send(users);
+      res.status(200).send(users);
     })
     .catch(next);
 }
@@ -41,13 +41,15 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
 
 export const updateUserProfile = (req: Request, res: Response, next: NextFunction) => {
   // @TODO: change hardcoded user to requested from db
-  // @ts-expect-error temporary solution - check todo above
   const { _id: userId } = req.user;
   const { name, about, avatar } = req.body;
 
-  if (!(name && about && avatar)) {
-    return next(new BadRequestError());
-  }
+  // for values that are passed but empty
+  Object.values(req.body).forEach(value => {
+    if (!value) {
+      throw new BadRequestError();
+    }
+  })
 
   User.findByIdAndUpdate(userId, { name, about, avatar }, { new: true })
     .then(user => {
@@ -62,7 +64,6 @@ export const updateUserProfile = (req: Request, res: Response, next: NextFunctio
 
 export const updateUserAvatar = (req: Request, res: Response, next: NextFunction) => {
   // @TODO: change hardcoded user to requested from db
-  // @ts-expect-error temporary solution - check todo above
   const { _id: userId } = req.user;
   const { avatar } = req.body;
 

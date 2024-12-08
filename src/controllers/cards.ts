@@ -14,7 +14,6 @@ export const getCards = (req: Request, res: Response, next: NextFunction) => {
 
 export const createCard = (req: Request, res: Response, next: NextFunction) => {
   // @TODO: change hardcoded user to requested from db
-  // @ts-expect-error temporary solution - check todo above
   const { _id: userId } = req.user;
   const { name, link } = req.body;
 
@@ -49,7 +48,6 @@ export const deleteCard = (req: Request, res: Response, next: NextFunction) => {
 
 export const likeCard = (req: Request, res: Response, next: NextFunction) => {
   // @TODO: change hardcoded user to requested from db
-  // @ts-expect-error temporary solution - check todo above
   const { _id: userId } = req.user;
   const { cardId } = req.params;
 
@@ -70,7 +68,6 @@ export const likeCard = (req: Request, res: Response, next: NextFunction) => {
 
 export const dislikeCard = (req: Request, res: Response, next: NextFunction) => {
   // @TODO: change hardcoded user to requested from db
-  // @ts-expect-error temporary solution - check todo above
   const { _id: userId } = req.user;
   const { cardId } = req.params;
 

@@ -23,9 +23,8 @@ app.use(express.json());
 // middlewares
 // @TODO: remove this and requested from db
 app.use((req: Request, res: Response, next: NextFunction) => {
-  // @ts-expect-error temporary solution - check todo above
   req.user = {
-    _id: '67536bea309a74f2f05a614f',
+    _id: '67536c04309a74f2f05a6151',
   };
 
   next();
@@ -41,8 +40,7 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 })
 
 // error middleware
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-app.use((err: any, req: Request, res: Response) => {
+app.use((err: Error & { statusCode: number; }, req: Request, res: Response) => {
   const { statusCode = 500, message } = err;
 
   res
