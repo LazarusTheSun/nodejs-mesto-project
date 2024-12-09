@@ -2,6 +2,7 @@ import BadRequestError from "errors/badRequestError";
 import NotFoundError from "errors/notFoundError";
 import { NextFunction, Request, Response } from "express";
 import User from 'models/user';
+import bcrypt from 'bcrypt';
 
 export const getUsers = (req: Request, res: Response, next: NextFunction) => {
   User.find({})
@@ -26,17 +27,19 @@ export const getUser = (req: Request, res: Response, next: NextFunction) => {
 }
 
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
-  const { name, about, avatar } = req.body;
+  const { name, about, avatar, email, password } = req.body;
 
-  if (!(name && about && avatar)) {
-    next(new BadRequestError());
+  if (!(email && password)) {
+    return next(new BadRequestError("Не указаны почта и пароль"));
   }
 
-  User.create({ name, about, avatar })
+  bcrypt.hash(password, 10).then(hashedPassword => {
+    User.create({ name, about, avatar, email, password: hashedPassword })
     .then(user => {
       res.status(201).send(user);
     })
     .catch(next);
+  })
 }
 
 export const updateUserProfile = (req: Request, res: Response, next: NextFunction) => {
