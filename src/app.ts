@@ -5,6 +5,7 @@ import usersRouter from 'routes/users';
 import cardsRouter from 'routes/cards';
 import NotFoundError from 'errors/notFoundError';
 import { createUser, login } from 'controllers/users';
+import auth from 'middleware/auth';
 
 const { PORT = 3000 } = process.env;
 
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use((req: Request, res: Response, next: NextFunction) => {
   req.user = {
     _id: '67536c04309a74f2f05a6151',
+    token: '',
   };
 
   next();
@@ -34,6 +36,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 // routes
 app.post('/signin', login);
 app.post('/signup', createUser);
+
+app.use(auth);
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
