@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import usersRouter from 'routes/users';
 import cardsRouter from 'routes/cards';
 import NotFoundError from 'errors/notFoundError';
-import { createUser, login } from 'controllers/users';
+import { signIn, signUp } from 'controllers/auth';
 import auth from 'middleware/auth';
 
 const { PORT = 3000 } = process.env;
@@ -23,8 +23,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // routes
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', signIn);
+app.post('/signup', signUp);
 
 app.use(auth);
 

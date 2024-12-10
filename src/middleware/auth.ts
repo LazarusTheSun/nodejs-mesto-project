@@ -3,9 +3,6 @@ import { Request, Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
 import { JwtPayload } from 'jsonwebtoken';
 
-const extractBearerToken = (token: string) => token.replace('Bearer ', '');
-
-
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const authorizatrion = req.headers.authorization;
 
@@ -13,7 +10,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     return next(new UnauthorizedError());
   }
 
-  const token = extractBearerToken(authorizatrion);
+  const token = authorizatrion.replace('Bearer ', '');
   let payload;
 
   try {
