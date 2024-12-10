@@ -1,6 +1,7 @@
 import UnauthorizedError from "errors/unuthorizedError";
 import { Request, Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
+import { JwtPayload } from 'jsonwebtoken';
 
 const extractBearerToken = (token: string) => token.replace('Bearer ', '');
 
@@ -21,7 +22,9 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     return next(new UnauthorizedError());
   }
 
-  req.user.token = payload;
+  req.user = {
+    token: payload as JwtPayload & { _id: string; }
+  };
 
   next();
 }

@@ -45,8 +45,7 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
 }
 
 export const updateUserProfile = (req: Request, res: Response, next: NextFunction) => {
-  // @TODO: change hardcoded user to requested from db
-  const { _id: userId } = req.user;
+  const { _id: userId } = req.user.token;
   const { name, about, avatar } = req.body;
 
   // for values that are passed but empty
@@ -68,8 +67,7 @@ export const updateUserProfile = (req: Request, res: Response, next: NextFunctio
 }
 
 export const updateUserAvatar = (req: Request, res: Response, next: NextFunction) => {
-  // @TODO: change hardcoded user to requested from db
-  const { _id: userId } = req.user;
+  const { _id: userId } = req.user.token;
   const { avatar } = req.body;
 
   if (!avatar) {
@@ -107,8 +105,22 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
 
         const token = jwt.sign({ _id: user._id }, 'secret-key', { expiresIn: '7d' });
 
-        res.status(200).send({token});
+        res.status(200).send({ token });
       })
+    })
+    .catch(next);
+}
+
+export const getActiveUser = (req: Request, res: Response, next: NextFunction) => {
+  const { _id: userId } = req.user.token;
+
+  User.findById(userId)
+    .then(user => {
+      if (!user) {
+        return next(new NotFoundError('Пользователь не найден'))
+      }
+
+      res.status(200).send(user);
     })
     .catch(next);
 }

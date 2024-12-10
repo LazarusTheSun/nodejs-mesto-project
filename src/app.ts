@@ -22,17 +22,6 @@ mongoose.connect(`${MONGO_HOST}/${DB_NAME}`);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// middlewares
-// @TODO: remove this and requested from db
-app.use((req: Request, res: Response, next: NextFunction) => {
-  req.user = {
-    _id: '67536c04309a74f2f05a6151',
-    token: '',
-  };
-
-  next();
-})
-
 // routes
 app.post('/signin', login);
 app.post('/signup', createUser);

@@ -13,8 +13,7 @@ export const getCards = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const createCard = (req: Request, res: Response, next: NextFunction) => {
-  // @TODO: change hardcoded user to requested from db
-  const { _id: userId } = req.user;
+  const { _id: userId } = req.user.token;
   const { name, link } = req.body;
 
   if (!(name && link)) {
@@ -47,8 +46,7 @@ export const deleteCard = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const likeCard = (req: Request, res: Response, next: NextFunction) => {
-  // @TODO: change hardcoded user to requested from db
-  const { _id: userId } = req.user;
+  const { _id: userId } = req.user.token;
   const { cardId } = req.params;
 
   Card.findByIdAndUpdate(
@@ -67,8 +65,7 @@ export const likeCard = (req: Request, res: Response, next: NextFunction) => {
 }
 
 export const dislikeCard = (req: Request, res: Response, next: NextFunction) => {
-  // @TODO: change hardcoded user to requested from db
-  const { _id: userId } = req.user;
+  const { _id: userId } = req.user.token;
   const { cardId } = req.params;
 
   Card.findByIdAndUpdate(
