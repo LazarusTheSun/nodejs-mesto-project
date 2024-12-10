@@ -6,6 +6,7 @@ import cardsRouter from 'routes/cards';
 import NotFoundError from 'errors/notFoundError';
 import { signIn, signUp } from 'controllers/auth';
 import auth from 'middleware/auth';
+import {requestLogger, errorLogger} from 'middleware/logger';
 
 const { PORT = 3000 } = process.env;
 
@@ -22,6 +23,9 @@ mongoose.connect(`${MONGO_HOST}/${DB_NAME}`);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// request logger
+app.use(requestLogger);
+
 // routes
 app.post('/signin', signIn);
 app.post('/signup', signUp);
@@ -35,6 +39,9 @@ app.use('/cards', cardsRouter);
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
   return next(new NotFoundError('Запрашиваемый путь не существует'));
 })
+
+// error logger
+app.use(errorLogger);
 
 // error middleware
 app.use((err: Error & { statusCode: number; }, req: Request, res: Response) => {
