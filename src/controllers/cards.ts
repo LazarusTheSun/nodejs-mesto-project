@@ -1,4 +1,5 @@
 import BadRequestError from "errors/badRequestError";
+import ForbiddenError from "errors/forbiddenError";
 import NotFoundError from "errors/notFoundError";
 import { NextFunction, Request, Response } from "express";
 import Card from "models/card";
@@ -32,15 +33,22 @@ export const createCard = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const deleteCard = (req: Request, res: Response, next: NextFunction) => {
+  const { _id: userId } = req.user.token;
   const { cardId } = req.params;
 
-  Card.findByIdAndDelete(cardId)
+  Card.findById(cardId)
     .then(card => {
+      if (card?.owner !== userId) {
+        throw new ForbiddenError('Невозможно удалить карточку другого пользователя');
+      }
+
       if (!card) {
         throw new NotFoundError('Карточка не найдена');
       }
 
-      res.status(200).send(card);
+      Card.deleteOne({_id: card._id}).then(deletedCard => {
+        res.status(200).send(deletedCard);
+      })
     })
     .catch(next);
 };
