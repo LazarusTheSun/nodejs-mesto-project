@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import usersRouter from 'routes/users';
 import cardsRouter from 'routes/cards';
 import NotFoundError from 'errors/notFoundError';
+import { createUser, login } from 'controllers/users';
 
 const { PORT = 3000 } = process.env;
 
@@ -31,6 +32,9 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 })
 
 // routes
+app.post('/signin', login);
+app.post('/signup', createUser);
+
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
