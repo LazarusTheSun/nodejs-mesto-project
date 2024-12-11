@@ -7,6 +7,7 @@ import NotFoundError from 'errors/notFoundError';
 import { signIn, signUp } from 'controllers/auth';
 import auth from 'middleware/auth';
 import {requestLogger, errorLogger} from 'middleware/logger';
+import { errors } from 'celebrate';
 
 const { PORT = 3000 } = process.env;
 
@@ -43,7 +44,11 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 // error logger
 app.use(errorLogger);
 
-// error middleware
+// error middlewares
+// celebrate
+app.use(errors());
+
+// custom
 app.use((err: Error & { statusCode: number; }, req: Request, res: Response, next: NextFunction) => {
   const { statusCode = 500, message } = err;
 

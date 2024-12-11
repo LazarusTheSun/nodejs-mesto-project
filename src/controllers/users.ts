@@ -61,6 +61,8 @@ export const updateUserAvatar = (req: Request, res: Response, next: NextFunction
         throw new NotFoundError('Пользователь не найден');
       }
 
+      console.log()
+
       res.status(200).send(user);
     })
     .catch(next);

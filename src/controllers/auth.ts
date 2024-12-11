@@ -10,14 +10,12 @@ export const signUp = (req: Request, res: Response, next: NextFunction) => {
   const { name, about, avatar, email, password } = req.body;
 
   if (!(email && password)) {
-    return next(new BadRequestError("Не указаны почта и пароль"));
+    return next(new BadRequestError("Не указаны почта и/или пароль"));
   }
 
   bcrypt.hash(password, 10).then(hashedPassword => {
     User.create({ name, about, avatar, email, password: hashedPassword })
       .then(user => {
-        console.log(user);
-
         res.status(201).send(user);
       })
       .catch(err => {

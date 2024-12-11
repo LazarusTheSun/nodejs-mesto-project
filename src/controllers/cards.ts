@@ -38,15 +38,17 @@ export const deleteCard = (req: Request, res: Response, next: NextFunction) => {
 
   Card.findById(cardId)
     .then(card => {
-      if (card?.owner !== userId) {
-        throw new ForbiddenError('Невозможно удалить карточку другого пользователя');
-      }
-
       if (!card) {
         throw new NotFoundError('Карточка не найдена');
       }
 
-      Card.deleteOne({_id: card._id}).then(deletedCard => {
+      const ownerId = card?.owner.toString();
+
+      if (ownerId !== userId) {
+        throw new ForbiddenError('Невозможно удалить карточку другого пользователя');
+      }
+
+      Card.deleteOne({ _id: card._id }).then(deletedCard => {
         res.status(200).send(deletedCard);
       })
     })

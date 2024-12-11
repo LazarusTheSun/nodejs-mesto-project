@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { avatarRegExp } from "constants/regExps";
 
 interface ICard {
   name: string;
@@ -17,6 +18,10 @@ const CardSchema = new Schema<ICard>({
   },
   link: {
     type: String,
+    validate: {
+      validator: (avatar: string) => avatarRegExp.test(avatar),
+      message: 'Неправильный формат ссылки',
+    },
     required: true,
   },
   owner: {

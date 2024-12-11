@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import validator from 'validator';
+import { avatarRegExp } from "constants/regExps";
 
 interface IUser {
   name: string;
@@ -30,6 +31,10 @@ const UserSchema = new Schema<IUser>({
   },
   avatar: {
     type: String,
+    validate: {
+      validator: (avatar: string) => avatarRegExp.test(avatar),
+      message: 'Неправильный формат ссылки',
+    },
     default: USER_DEFAULT_DATA.avatar,
   },
   email: {
