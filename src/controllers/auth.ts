@@ -4,6 +4,7 @@ import BadRequestError from "errors/badRequestError";
 import UnauthorizedError from "errors/unuthorizedError";
 import User from 'models/user';
 import jwt from 'jsonwebtoken';
+import ConflictError from "errors/conflictError";
 
 export const signUp = (req: Request, res: Response, next: NextFunction) => {
   const { name, about, avatar, email, password } = req.body;
@@ -15,9 +16,17 @@ export const signUp = (req: Request, res: Response, next: NextFunction) => {
   bcrypt.hash(password, 10).then(hashedPassword => {
     User.create({ name, about, avatar, email, password: hashedPassword })
       .then(user => {
+        console.log(user);
+
         res.status(201).send(user);
       })
-      .catch(next);
+      .catch(err => {
+        if (err.code === 11000) {
+          return next(new ConflictError("Пользователь с указанным email уже существует"))
+        }
+
+        return next(err);
+      });
   })
 }
 
