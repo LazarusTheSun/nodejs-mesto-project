@@ -1,4 +1,3 @@
-import BadRequestError from "errors/badRequestError";
 import NotFoundError from "errors/notFoundError";
 import { NextFunction, Request, Response } from "express";
 import User from 'models/user';
@@ -29,13 +28,6 @@ export const updateUserProfile = (req: Request, res: Response, next: NextFunctio
   const { _id: userId } = req.user.token;
   const { name, about, avatar } = req.body;
 
-  // for values that are passed but empty
-  Object.values(req.body).forEach(value => {
-    if (!value) {
-      throw new BadRequestError();
-    }
-  })
-
   User.findByIdAndUpdate(userId, { name, about, avatar }, { new: true })
     .then(user => {
       if (!user) {
@@ -50,10 +42,6 @@ export const updateUserProfile = (req: Request, res: Response, next: NextFunctio
 export const updateUserAvatar = (req: Request, res: Response, next: NextFunction) => {
   const { _id: userId } = req.user.token;
   const { avatar } = req.body;
-
-  if (!avatar) {
-    return next(new BadRequestError());
-  }
 
   User.findByIdAndUpdate(userId, { avatar }, { new: true })
     .then(user => {

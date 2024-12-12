@@ -2,9 +2,14 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from 'bcrypt';
 import BadRequestError from "errors/badRequestError";
 import UnauthorizedError from "errors/unuthorizedError";
-import User from 'models/user';
+import User, { IUser } from 'models/user';
 import jwt from 'jsonwebtoken';
 import ConflictError from "errors/conflictError";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const { SECRET_KEY = '' } = process.env;
 
 export const signUp = (req: Request, res: Response, next: NextFunction) => {
   const { name, about, avatar, email, password } = req.body;
@@ -15,8 +20,11 @@ export const signUp = (req: Request, res: Response, next: NextFunction) => {
 
   bcrypt.hash(password, 10).then(hashedPassword => {
     User.create({ name, about, avatar, email, password: hashedPassword })
-      .then(user => {
-        res.status(201).send(user);
+      .then((user) => {
+        const userObj = user.toObject() as Partial<IUser>;
+        delete userObj?.password;
+
+        res.status(201).send(userObj);
       })
       .catch(err => {
         if (err.code === 11000) {
@@ -41,15 +49,17 @@ export const signIn = (req: Request, res: Response, next: NextFunction) => {
         throw new UnauthorizedError('Неправильные почта или пароль');
       }
 
-      bcrypt.compare(password, user.password).then(passwordsMatched => {
-        if (!passwordsMatched) {
-          throw new UnauthorizedError('Неправильные почта или пароль');
-        }
+      return bcrypt.compare(password, user.password)
+        .then(passwordsMatched => {
+          if (!passwordsMatched) {
+            throw new UnauthorizedError('Неправильные почта или пароль');
+          }
 
-        const token = jwt.sign({ _id: user._id }, 'secret-key', { expiresIn: '7d' });
+          const token = jwt.sign({ _id: user._id }, SECRET_KEY, { expiresIn: '7d' });
 
-        res.status(200).send({ token });
-      })
+          res.status(200).send({ token });
+        })
+        .catch(next);
     })
     .catch(next);
 }

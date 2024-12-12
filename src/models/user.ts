@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import validator from 'validator';
 import { avatarRegExp } from "constants/regExps";
 
-interface IUser {
+export interface IUser {
   name: string;
   about: string;
   avatar: string;

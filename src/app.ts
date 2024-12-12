@@ -6,8 +6,12 @@ import cardsRouter from 'routes/cards';
 import NotFoundError from 'errors/notFoundError';
 import { signIn, signUp } from 'controllers/auth';
 import auth from 'middleware/auth';
-import {requestLogger, errorLogger} from 'middleware/logger';
+import { requestLogger, errorLogger } from 'middleware/logger';
+import errorMiddleware from 'middleware/error';
 import { errors } from 'celebrate';
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const { PORT = 3000 } = process.env;
 
@@ -49,20 +53,7 @@ app.use(errorLogger);
 app.use(errors());
 
 // custom
-app.use((err: Error & { statusCode: number; }, req: Request, res: Response, next: NextFunction) => {
-  const { statusCode = 500, message } = err;
-
-  res
-    .status(statusCode)
-    .send({
-      status: 'error',
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message
-    });
-
-  next();
-})
+app.use(errorMiddleware);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
